@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: lab
+      POSTGRES_PASSWORD: lab_local_only
+      POSTGRES_DB: booking_lab
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lab -d booking_lab"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+  api:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://lab:lab_local_only@db:5432/booking_lab
+      DB_POOL_SIZE: ${DB_POOL_SIZE:-5}
+    depends_on:
+      db:
+        condition: service_healthy
+  loadtest:
+    image: grafana/k6:0.57.0
+    profiles: ["tools"]
+    volumes:
+      - ./loadtests:/scripts:ro
+    environment:
+      BASE_URL: http://api:8000
+      RATE: ${RATE:-50}
+      DURATION: ${DURATION:-30s}
+    command: ["run", "/scripts/baseline.js"]
+volumes:
+  postgres_data:
