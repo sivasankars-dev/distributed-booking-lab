@@ -16,7 +16,16 @@ The API listens on `127.0.0.1:8000` on your computer. The load-test container us
 
 ## Requirements and setup
 
-You need Git, Docker Desktop with Docker Compose, a running Docker daemon, and `curl`. Commands use macOS/Linux shell syntax and run from the repository root. Image builds and pulls may need network access. You do not need a host Python installation or host k6 installation for these commands.
+You need Git, Docker Desktop with Docker Compose, a running Docker daemon, and `curl`. Commands use macOS/Linux shell syntax. After cloning, run the remaining commands from the repository root. Image builds and pulls may need network access. You do not need a host Python installation or host k6 installation for these commands.
+
+Clone the repository and enter its directory. If you already have a checkout, open its directory instead.
+
+```bash
+git clone https://github.com/sivasankars-dev/distributed-booking-lab.git
+cd distributed-booking-lab
+```
+
+Start the application:
 
 ```bash
 docker compose up --build -d
@@ -35,7 +44,7 @@ curl --fail http://localhost:8000/ready
 
 ## Configuration today
 
-The current starter works without `.env`: Compose provides local database credentials and defaults. An empty `.env.example` placeholder exists in the inspected working tree; a populated, documented example remains planned. There is no useful copy-and-configure step for it today.
+The current starter works without `.env`: Compose provides local database credentials and defaults. A documented `.env.example` is planned.
 
 Compose reads a local `.env` for variable substitution. Only settings wired through Compose reach the relevant container; arbitrary entries do not configure the application automatically. Shell values take precedence over `.env` substitution for the variables below.
 
